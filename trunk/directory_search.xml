@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <onebox xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="directory_search" suppressDateTime="true" suppressIPAddr="true" suppressKeyword="true" type="external">
 <name>directory_search</name>
 <security userAuth="none"/>
@@ -8,7 +8,8 @@
 <resultsTemplate>
 <xsl:template name="directory_results">
 <!-- here on -->
-<xsl:variable name="SearchRequeryUrl">http://yourGoogleBox/search?q=</xsl:variable>
+<xsl:variable name="SearchRequeryUrl">http://yourGoogleBox.com/search?q=</xsl:variable>
+<xsl:variable name="image"><xsl:value-of select="IMAGE_SOURCE"/></xsl:variable>
 	<link href="http://yourWebServer/DirectoryWebSvc/directory.css" rel="stylesheet" type="text/css"/>
 		<table bgcolor="#e5ecf9" border="0" cellpadding="0" cellspacing="0" width="100%">
 			<tr>
@@ -42,7 +43,12 @@
 								<xsl:text>
 								</xsl:text>
 								<td>
-									<img alt="" border="0" height="32" src="http://yourWebServer/DirectoryWebSvc/images/employee.bmp" width="32"/>
+									<img>
+									 	<xsl:attribute name="src"><xsl:value-of select="$image"/></xsl:attribute>
+										<xsl:attribute name="border">0</xsl:attribute>
+										<xsl:attribute name="height">32</xsl:attribute>
+										<xsl:attribute name="width">32</xsl:attribute>
+									</img>
 								</td>
 								<xsl:text>
 								</xsl:text>

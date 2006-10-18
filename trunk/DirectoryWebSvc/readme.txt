@@ -7,15 +7,15 @@ This service was created to provide xml data to a OneBox module for employee sea
 ASSUMPTIONS:
 		You have a Microsoft LDAP server which you can query for user attibutes such as name, phone etc.
 		You have an Outlook for Web Access (OWA) server in which you can query the public mail store for
-		users free/busy schedule.  If you don't have an OWA store and don't want to bring back users free/bush
+		users free/busy schedule.  If you don't have an OWA store and don't want to bring back users free/busy
 		schedule just comment out line 97 of the DirectoryService.cs file.  This code was written for an environment
-		where basic authentication is used over SSL (port 443) to Access	the outlook mail store and that an x509
+		where basic authentication is used over SSL (port 443) to Access the outlook mail store and that an x509
 		certificate is used.  If your mail server does not use certificates I believe the code will still work fine
 		or you can just comment out line 257 of the DirectoryService.cs.
 
 IIS SETUP / CODE MODIFICATIONS:
 1)	Create a Virtual Directory on IIS called DirectoryWebSvc and point it to the location where you
-		downloaded the project files.
+		unzipped the project.
 
 2)	Open the DirectoryWebSvc.sln file then modify DirectoryService.cs in the App_Code directory as follows:
 		2a)	line 12 - WebService Namespace - change to the URL where this code resides on your IIS
@@ -47,10 +47,12 @@ GSA SETUP:
 3)	Change the URL in the "External Provider" text box to the URL of the DirectoryService.asmx file. If
 		you're using a local IIS don't use localhost, use the name of your local computer. The GSA doesn'the
 		know who localhost is. Save the changes.
-4)	Now you must associate this OneBox module to a frontend.  Go to Serving and select the "OneBox Modules"
-		tab then select the module from the "Available Modules" list and click the > arrow to move it to the
+4)	Now you must associate this OneBox module to a frontend.  Go to Serving and select "Front Ends". Choose
+		a front end that you would like to dispay the OneBox and select the "Edit button. Select the "OneBox Modules"
+		tab then select the module from	the "Available Modules" list and click the > arrow to move it to the
 		"Selected Modules" list.  Save the settings.
-5)	Go to the GSA search page and enter one of the keywords that trigger the onebox
+5)	Go to the GSA search page and enter your name to trigger the onebox.  Make sure your using the front end
+		in which you associated the module.
 
 
 ABOUT THE SEARCH:
