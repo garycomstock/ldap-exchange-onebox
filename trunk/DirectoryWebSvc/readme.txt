@@ -2,7 +2,7 @@ Installing and using the DirectoryWebService example:
 --------------------------------------------------------
 REQUIRES: Visual Studio 2005
 
-This service was created to provide xml data to a OneBox module for employee search	results.
+This service was created to provide xml data to a OneBox module for employee search results.
 
 ASSUMPTIONS:
 		You have a Microsoft LDAP server which you can query for user attibutes such as name, phone etc.
@@ -22,10 +22,10 @@ IIS SETUP / CODE MODIFICATIONS:
 		2b)	line 19 - "Namespace" - same as above
 		2c)	line 20 - "UserID" - user allowed to perform an LDAP search.  Same user in our example searches the OWA
 				mail server to get users free/busy schedule
-		2d) line 21 - "Password" - password for above UserID
-		2e) line 22 - "Domain" - name of domain
-		2f) line 23 - "MailServer" - name of Outlook for Web access (OWA) server, typically mail.mydomain.com
-		2g) line 49 - Change to your LDAP server, port and search path where users are located, something
+		2d)	line 21 - "Password" - password for above UserID
+		2e)	line 22 - "Domain" - name of domain
+		2f)	line 23 - "MailServer" - name of Outlook for Web access (OWA) server, typically mail.mydomain.com
+		2g)	line 49 - Change to your LDAP server, port and search path where users are located, something
 				like "LDAP://yourLDAPServer:389/ou=searchPath,dc=mydomain,dc=com"
 		2h)	line 82 - Change to URL where OneBox image is located (supplied in image directory or just use your own)
 

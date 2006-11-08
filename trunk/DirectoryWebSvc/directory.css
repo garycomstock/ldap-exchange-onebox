@@ -8,13 +8,6 @@
 			.tentative{background-color:#ffff00;height:10px;width:10px;padding:0;margin:0;}
 			.oof{background-color:#663366;height:10px;width:10px;padding:0;margin:0;}
 			.busy{background-color:#0000cc;height:10px;width:10px;padding:0;margin:0;}
-			.KeyAvail{background-color:#00ff00;height:15px;width:15px;font-size:1px;}
-			.KeyTentative{background-color:#ffff00;height:15px;width:15px;}
-			.KeyBusy{background-color:#ff0000;height:15px;width:15px;}
-			.KeyNA{background-color:#ffffff;height:15px;width:15px;}
-			.gridKey{height:15px;width:15px;border:1px solid #ccc;font-size:1px;}
-			.key{font-size:11px;color:#999999;padding:0 10px 0 3px;}
-			.KeyTable{margin:4px 0 0 0 ;}
 			.InfoText{font-size:14px;padding:0 0 0 10px;}
 			.InfoHeading{font-size:18px;font-style:italic;}
 			.multiColor{color:#008000;}
