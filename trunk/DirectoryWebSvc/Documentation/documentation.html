@@ -1,0 +1,342 @@
+<!DOCTYPE html public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>LDAP / Exchange OneBox Setup</title>
+<style>
+	body{font-family:font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;}
+	a:visited{color:#0033ff;text-decoration:none;font-size:16px;}
+	a:link{color:#0033ff;text-decoration:none;font-size:16px;}
+</style>
+</head>
+<body>
+<div>
+	<center>
+		<h1 class="header1">Google Search Appliance</h1>
+		<h1 class="header1"> LDAP / Exchange OneBox Setup</h1>
+	</center>
+	<p>&nbsp;</p><h2 class="header2"> Contents</h2>
+	<p>
+		<a href="#introduction">1. Introduction</a><br>
+		<a href="#2._Prerequisites">2. Prerequisites</a><br>
+		<a href="#3._Configuring_IIS">3. Configuring Web Service on IIS </a><br>
+		<a href="#4._Code_Modification">4. Modifying Web.Config</a><br>
+		<a href="#5._GSA_Installation">5. Installing XML on Google Search Appliance</a><br>
+		<a href="#Testing_Debugging">6. Testing / Debugging</a><br>
+		<a href="#Addl_Info">7. Additional Information</a><br>
+		<br>
+		<p>
+			If you use this OneBox module please send me a quick <a href="mailto:gcomstock@keyenergy.com">email</a>
+			just letting me know you were successful in setting it up and it has some benefit in your organization.  It just might inspire 
+			me to write	more open source Onebox modules :)<br><br>
+		</p>
+		<br>
+		<h2 class="header2">
+			<a class="header2"></a>
+			<a name="introduction"></a> 1. Introduction
+		</h2>
+		<p>
+			A .NET web service written in C# makes a call to an LDAP server and a Microsoft
+			Exchange server to return a users first and last name, email address, office phone and
+			cell phone numbers along with the employees free/busy schedule for the day from 8:00 AM to
+			5:00 PM.<br><br>
+			This web service takes 1 parameter which is an LDAP search function called <em>anr</em> which stands for
+			ambiguous name resolution.  <a href="http://support.microsoft.com/?kbid=243299" target="_blank">Here</a>
+			is some information about anr from Microsoft.<br><br>
+			LDAP clients can use ANR to make searching and querying easier. Rather than presenting complex filters,
+			a search can be presented for partial matches. If a space is embedded in the search string, as in the
+			case above, the search is divided at the space and an "or" search is also performed on the attributes.
+			If there is more than one space, the search divides only at the first space.<br><br>
+			This means when performing LDAP searches you can use partial names or initials instead of using the entire first
+			and last name.
+			<ul>
+				<li>GivenName
+				<li>Surname
+				<li>displayName
+				<li>LegacyExchangeDN
+				<li>msExchMailNickname
+				<li>RDN
+				<li>physicalDeliveryOfficeName
+				<li>proxyAddress
+				<li>sAMAccountName
+			</ul>
+		</p>
+		<p>&nbsp;</p>
+		<h3> Included in package</h3>
+		<p>
+			<ol>
+				<li><strong>Complete .NET code creating a web service and .sln file used if necessary to open in Visual	Studio 2005.</strong>
+		</p>
+		<p>
+				<ul>
+					<li>This code runs on an IIS server and returns XML which is read by the GSA.
+						This code has been tested on Windows XP, 2000 and 2003 Servers.
+				</ul>
+		</p>
+		<p>
+				<li><strong>XML file directory_search.xml</strong>
+		</p>
+		<p>
+				<ul>
+					<li>This file gets imported into the GSA and is used by the GSA to render via XSLT the results returned
+						by the web service as HTML.
+				</ul>
+		</p>
+		<p>
+				<li><strong>employee.bmp</strong>
+		</p>
+		<p>
+				<ul>
+					<li>This bitmap image is added next to each employee result see the <A href="#image">image</A> below.
+				</ul>
+		</p>
+		<p>
+				<li><strong>directory.css</strong>
+		</p>
+		<p>
+				<ul>
+					<li>This stylesheet is used by the XML file <em>directory_search.xml</em> and formats the HTML as
+					it's being rendered by the GSA.
+				</ul>
+			</ol>
+		</p>
+		<br>
+		<h2 class="header2">
+			<a class="header2"></a>
+			<a name="2._Prerequisites"></a> 2. Prerequisites
+		</h2>
+		<p>
+			<ul>
+				<li>Microsoft Visual Studio 2005
+				<li>Windows XP, 2000 or 2003 Server running IIS and the 2.0 .NET Framework
+				<li>Microsoft Exchange server 2000 or 2003 with OWA (Outlook for Web Access) configured
+					<ul>
+						<li><strong>Note:</strong> If you don't have an OWA store and can't or don't want to bring back users free/busy
+							schedule just comment out lines 97 through 101 of the <em>DirectoryService.cs</em> file in the App_Code directory.
+							When the <em>directory_search.xml</em> code gets executed by the GSA the XSLT stylesheet evalutes using if/then/else
+							logic.  If an email address exists then then display the HTML for the free/busy, else display only the Name and phone numbers.
+					</ul>
+				</li>
+			</ul>
+		</p>
+		<h2 class="header2">
+			<a class="header2"></a>
+			<a name="3._Configuring_IIS"></a> 3. Configuring Web Service on IIS
+		</h2>
+		<p>
+			Unzip the project and copy the DirectoryWebSvc folder to C:\Inetpub\wwwroot directory.  Launch Internet
+			Information Services and locate the DirectoryWebSvc folder and right click.  Choose "properties" then click the "Create"
+			button on the "Directory" tab, this will create a virtual directory for the web service.  Select the ASP.NET tab and choose
+			the 2.0.xxxxx version if you have more than one framework installed on the IIS server.
+		</p>
+		<h2 class="header2">
+			<a class="header2"></a>
+			<a name="#4._Code_Modification"></a> 4. Modifying Web.Config
+		</h2>
+		<p>
+			In order for the web service to run in your environment application settings need to be modified.  These changes take place in the 
+			Web.Config file.<br>
+			There are two ways to do this, just pick the way best suits you:
+			<ol>
+				<li>
+					<p>
+						Either open the project in Visual Studio 2005 by selecting the DirectoryWebSvc.sln file then opening the Web.Config file<br><br>
+						<SPAN style="text-decoration: underline;"><IMG alt="Web.Config file" src="doc_images\webConfig1.png"></SPAN>
+					</p>
+				<li>
+					<p>
+						Or after Configuring IIS in the previous steps select the ASP.NET tab then choose the "Edit Configuration..." button.
+						From the "General" tab there are application setting in the lower half of the dialog box.  Just select each line then the "Edit..." button<br><br>
+						<SPAN style="text-decoration: underline;"><IMG alt="Web.Config file" src="doc_images\webConfig.png"></SPAN>
+					</p>
+			</ol>
+			<p>
+				Either way you choose to edit the file each entry has a "key" and a "value" and must be modified in order to return valid XML.
+			</p>
+			<p>
+				<ul>
+					<li>
+						<p>
+							<strong>proxyURL </strong> - If getting access to OWA requires going through a proxy server then enter it here, needs to be in the form of &lt;protocol&gt;&lt;address&gt;&lt;port&gt; e.g. 
+							http://192.168.100.101:3128	or http://myproxy.domain.com:3128 or just <strong>leave blank if not used</strong>
+						</p>
+					<li>
+						<p>
+							<strong>authType</strong> - Method your OWA uses for authentication, is either set to "basic" or "forms":<br>
+							<ul>
+								<li><strong>basic</strong> - The basic authentication method is a widely used, industry-standard
+						    	method for collecting user name and password information. When you 
+								use Basic authentication, your Web browser displays a dialog box where
+						    	you can enter your previously assigned Windows 2000/2003 domain account 
+								user names and passwords. If basic authentication is used for OWA then the login password prompt
+								will look like <a href="http://www.windowsitpro.com/Files/41185/Figure_01.gif" target="_blank">this</a>
+								<li><strong>forms</strong> - Forms authentication can be used on Exchange 2003/2007 and is very different
+						    	from basic authentication.  If forms based authentication is used (you'll know if your OWA 2003 login page looks 
+								like <a href="http://www.petri.co.il/images/forms_based4.gif" target="_blank">this</a>) then choose this option. 
+								<br><strong>Note:</strong> All OWA 2003 servers running forms based authentication (FBA) I have tested this code against have
+								needed to have a change made to their configuration before the free/busy schedule will return from OWA.  Apparently if you have
+								published a certificate on the OWA by default it incorrectly gets published to the Exadmin virtual directory as well as the Exchange
+								and Public virtual directories.  You will want to check this setting and take the appropriate action.  Open the IIS that hosts OWA 
+								and locate the Exadmin web then right click and go to properties. Select the "Directory Security" tab then at the bottom
+								select the "Edit" button under the Secure Communications frame.  Make sure to remove the check so SSL is not required.  Then just select OK.<br>
+								For more information see <a href="http://support.microsoft.com/kb/324345" target="_blank">this</a> Microsoft KB article.
+							</ul>
+						</p>
+					<li>
+						<p>
+							<strong>owaURL</strong> - URL to the owa server, typically something like https://mail.myDomain.com
+						</p>
+					<li>
+						<p>
+							<strong>domain</strong> - The dns name of your domain.  Use nbtstat -c at a command prompt if unsure
+						</p>
+					<li>
+						<p>
+							<strong>userID</strong> - Network user id that can log into both LDAP and Exchange to perform searches
+						</p>
+					<li>
+						<p>
+							<strong>password</strong> - Network password for above user id
+						</p>
+					<li>
+						<p>
+							<strong>ldapServer</strong> - The path to the LDAP server in the form of LDAP://server:port/OU=pathToSearch,DC=domain,DC=com
+						</p>
+					<li>
+						<p>
+							<strong>image</strong> - image file, default is employee.bmp in the "images" directory of the project
+						</p>
+					<li>
+						<p>
+							<strong>namespace</strong> - URL to the the DirectoryWebSvc project on the IIS server.  If you've installed this web service at the root of the IIS the
+							the URL would be <em>http://YourWebServer/DirectoryWebSvc/</em>.  If you buried this in (example) a subdirectory on the IIS called "google" then
+							the namespace would need to be <em>http://YourWebServer/google/DirectoryWebSvc/</em>
+						</p>
+				</ul>
+			</p>
+		<h2 class="header2">
+			<a class="header2"></a>
+			<a name="5._GSA_Installation"></a> 5. Installing XML on Google Search Appliance
+		</h2>
+		<p>
+			<ul>
+				<li>
+					<p>
+						Using a text editor open the attached <em>directory_search.xml</em> file and perform the following:
+					</p>
+				<ul>
+					
+					<li>
+						<p>
+							<strong>Line 10</strong> - modify the variable <strong>SearchRequeryUrl</strong> to your GSA's URL
+						</p>
+					<li>
+						<p>
+							<strong>Line 12</strong> - modify the href link attribute for the <strong>directory.css</strong> style sheet to the URL where the directory.css
+							is located.  This will be something like <em>http://myWebServer.myDomain.com/DirectoryWebSvc/App_Theme/directory.css</em>
+						</p>
+				</ul>
+				<li>
+					<p>
+						Log into the GSA as an administrator (http://myGoogleBox.myDomain.com:8000/EnterpriseController)
+					</p>
+					<ul>
+						<li>
+							<p>
+								Select <strong>Serving > OneBox Modules</strong> from the left side of the page.  Click the "Browse..." button and import
+								the provided <em>directory_search.xml</em> document
+							</p>
+						<li>
+							<p>
+								Change the current <strong>yourWebServer</strong> portion of the URL 
+								<em>http://myWebServer.myDomain.com/DirectoryWebSvc/DirectoryService.asmx/GoogleUsers</em> in the "External Provider" 
+								text box to the URL of the DirectoryService.asmx file. If you're using a local IIS
+								don't use localhost, use the name of your local computer. The GSA doesn't know who localhost is. 
+								Save the changes
+							</p>
+						<li>
+							<p>
+								Now you must associate this OneBox module to at least one frontend.  Go to <strong>Serving > Front Ends</strong>. Choose
+								a front end that you would like to dispay the OneBox and select the "Edit button. Select the "OneBox Modules"
+								tab then select the module from	the "Available Modules" list and click the > arrow to move it to the
+								"Selected Modules" list.  Save the settings
+							</p>
+					</ul>
+			</ul>
+		<h2 class="header2">
+			<a class="header2"></a>
+			<a name="#Testing_Debugging"></a> 6. Testing / Debugging
+		</h2>
+		<h3> Testing Web Service</h3>
+		<p>
+			In order to test the web service you will need to load the project into Visual Studio 2005 and compile it.  Execute the
+			code and you should see your browser open with the URL <em>http://localhost/DirectoryWebSvc/DirectoryService.asmx</em>
+			in the address bar.<br><br>
+			Click on the GoogleUsers link then enter your first and last name in the text box and click the "Invoke"
+			button.  You should then see the output in XML similar to the included <strong>XML_Example.xml</strong> file.<br><br>
+		</p>
+		<h3> Debugging Web Service</h3>
+		<p>	
+			If you don't then the error message should help you determine what the problem might be.<br><br>
+			If you know .NET then just put a breakpoint somewhere in the beginning of the code and step through. Also double check the Web.Config 
+			file to ensure the changes are correct.
+			<br>
+			<ul>
+				<li>If your not using a proxy server is the value in the Web.Config file "" or if altering using IIS is the value blank?
+				<li>If you are using a proxy is the value correct inlcuding the port?
+				<li>Are you sure the authType is correct, forms vs. basic?
+				<li>Is the ldapServer value correct?  If necessary use an LDAP
+				<li>User ID has access to search LDAP and the Exchange (OWA) public directory where free/busy data is stored?
+				<li>Password for above user ID is correct?
+			</ul>
+		</p>
+		<h3> Testing GSA</h3>
+		<p>
+			If the above test performs fine then your ready for a test using the Google Search Appliance. Go to the URL of your appliance
+			and type in your name or a portion of your name and click the search button.  You should see the OneBox results displayed just like
+			this <A href="#image">image</A>.<br><br>
+		</p>
+		<h3> Debugging GSA</h3>
+		<p>	
+			If for some reason you get no OneBox results then log into the enterprise controller of your GSA 
+			(http://myGSA.myDomain.com:8000/EnterpriseController) and then select <strong>Serving > OneBox Modules</strong> from the left side of the page. 
+			Click on the "View Log" hyperlink to view the output from any error messages.  Hopefully this will give you enough information 
+			to determine if the problem is web service (data) related.<br>
+			A few things to try if you have timeout trouble is to change the <strong>Serving > OneBox Modules</strong> "OneBox response timeout"
+			to something like 1500 or 2000. Also to ensure the webservice URL is correct you can copy the URL from the log and paste it directly into a browser to test web service is returning data.
+			<br><br>Here's an example error message, copy and paste the values you get highlighted in bold red font into your browser:<br><br>
+			<font size="-1.5">[19/Apr/2007:12:44:17]&nbsp;1177004657.74&nbsp;&nbsp;&nbsp;Query&nbsp;[gary comstock]<br>[directory_search]<br>	
+			[<strong><font color="red">http://192.168.98.36/DirectoryWebSvc/DirectoryService.asmx/GoogleUsers?apiMaj=1&amp;apiMin=0&amp;oneboxName=directory_search&amp;lang=en&amp;query=gary%20comstock&amp;authType=none</strong></font>]	[Send Timeout]</font><br><br>
+			Feel free to <a href="mailto:gary.comstock@gmail.com">contact me</a> if you have problems or suggestions.
+		</p>
+		<h2 class="header2">
+			<a class="header2"></a>
+			<a name="#Addl_Info">7. Additional Information
+		</h2>
+		<p>
+			The web service returns the LDAP attributes for:
+			<ul>
+				<li><strong>distinguishedName</strong> LDAP CN
+				<li><strong>givenName</strong> - first name
+				<li><strong>sn</strong> - last name
+				<li><strong>physicalDeliveryOfficeName</strong> - office location (viewed when mouseover of name on OneBox results)
+				<li><strong>mail</strong> - email address
+				<li><strong>telephoneNumber</strong> - office phone number
+				<li><strong>mobile</strong> - cell phone number
+			</ul>
+			
+			If for example you don't use <em>physicalDeliveryOfficeName</em> in your organization and would like to view some other
+			LDAP attribute on mouseover of the employee name then you can use any <a href="http://www.ldapbrowser.com/download.htm" target="_blank">LDAP tool</a>
+			to view the available LDAP attributes then choose which one you would like to display instead.  Just open the <em>DirectoryService.cs</em> file 
+			in Visual Studio and change it in line 128.  The variable name is still "office" but the new attribute will display instead of 
+			the physicalDeliveryOfficeName.  If you have done much programming you can probably make these types of changes pretty easily.
+		</p>
+	<hr>
+	<h2 class="header2">
+			<a class="header2"></a>
+			Working LDAP/Exchange OneBox
+		</h2>
+	<a name="image"></a><SPAN style="text-decoration: underline;"><IMG alt="OneBox results image" src="doc_images\onebox.png"></SPAN>
+	<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+	</div>
+</body>
+</html>
