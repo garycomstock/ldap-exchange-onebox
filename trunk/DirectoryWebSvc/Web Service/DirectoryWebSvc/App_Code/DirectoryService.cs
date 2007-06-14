@@ -59,6 +59,7 @@ public class DirectoryService : System.Web.Services.WebService
             ldapSearcher.SearchRoot = ldap;
             ldapSearcher.SearchScope = SearchScope.Subtree;
             ldapSearcher.Sort.Direction = SortDirection.Ascending;
+            ldapSearcher.Sort.PropertyName = "givenname";
 
             // create new XML document
             XmlDeclaration dec = docUserInfo.CreateXmlDeclaration("1.0", "UTF-8", null);
