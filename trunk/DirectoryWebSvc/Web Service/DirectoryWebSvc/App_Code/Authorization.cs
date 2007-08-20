@@ -24,8 +24,18 @@ public class Authorization
         HttpWebRequest fbRequest = (HttpWebRequest)WebRequest.Create(freebusyURL);
 
         // create credentials from user name, password and domain
+        NetworkCredential netCred;
         CredentialCache creds = new CredentialCache();
-        NetworkCredential netCred = new NetworkCredential(userID, password, domain);
+
+        // if OWA is configured to use default domain then web.config value for default should be blank
+        if (domain=="")
+        {
+             netCred = new NetworkCredential(userID, password);
+        }
+        else
+        {
+            netCred = new NetworkCredential(userID, password, domain);
+        }
         creds.Add(freebusyURL, "Basic", netCred);
         
         // add credentials to http web request
@@ -122,8 +132,16 @@ public class Authorization
         CookieContainer CookieJar = new CookieContainer();
         cookieRequest.CookieContainer = CookieJar;
 
-        // concatenate fields to be posted
-        postString = "destination=" + owaURL + "%2Fexchange%2F" + username + "%2F&username=" + domain + "%5C" + username + "&password=" + password + "&SubmitCreds=Log+On&forcedownlevel=0&trusted=0";
+        // concatenate fields to be posted to OWA
+        // if OWA is configured to use default domain then web.config value for default should be blank
+        if (domain == "")
+        {
+            postString = "destination=" + owaURL + "%2Fexchange%2F" + username + "%2F&username=" + username + "&password=" + password + "&SubmitCreds=Log+On&forcedownlevel=0&trusted=0";
+        }
+        else
+        {
+            postString = "destination=" + owaURL + "%2Fexchange%2F" + username + "%2F&username=" + domain + "%5C" + username + "&password=" + password + "&SubmitCreds=Log+On&forcedownlevel=0&trusted=0";
+        }
         
         // add http request attributes
         cookieRequest.KeepAlive = true;
