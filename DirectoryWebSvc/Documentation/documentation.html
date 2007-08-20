@@ -68,7 +68,8 @@
 		<p>
 				<ul>
 					<li>This code runs on an IIS server and returns XML which is read by the GSA.
-						This code has been tested on Windows XP, 2000 and 2003 Servers.
+						This code has been tested on Windows XP, 2000 and 2003 Servers.  It has also
+						been tested using Exchange (OWA) 2000 and 2003 using basic and forms authentication.
 				</ul>
 		</p>
 		<p>
@@ -134,7 +135,7 @@
 		<p>
 			In order for the web service to run in your environment application settings need to be modified.  These changes take place in the 
 			Web.Config file.<br>
-			There are two ways to do this, just pick the way best suits you:
+			There are two ways to do this, just pick the way that best suits you:
 			<ol>
 				<li>
 					<p>
@@ -187,6 +188,30 @@
 					<li>
 						<p>
 							<strong>domain</strong> - The dns name of your domain.  Use nbtstat -c at a command prompt if unsure
+							<ul>
+								<strong>Note:</strong> I have seen some issues where you will get a login error message from OWA.  This can be caused by the varying ways
+								in which you can configure OWA login.  One way to determine is when checking email through OWA do you enter your login credentials as <strong><em>"domain\username"</em></strong>
+								or just <strong><em>"username"</em></strong>?  If it is <strong><em>domain\username</em></strong> then just put in your domain name as described above.  If you do not have to enter your domain then leave
+								the domain blank. If while testing you get any of the error messages:
+								<li>
+									<font color="red" style="bold" size="-1.5"><strong>
+									You are not authorized to view this page. You do not have permission to view this directory or page using the credentials you supplied.
+									HTTP 401.1 - Unauthorized: Logon Failed
+									</strong></font>
+								</li>
+								<li>
+									<font color="red" style="bold" size="-1.5"><strong>
+									Error: Access is denied.
+									</strong></font>
+								</li>
+								<li>
+									<font color="red" style="bold" size="-1.5"><strong>
+									Page Cannot be Displayed.
+									</strong></font>
+								</li>
+								For more information see Microsoft KB article <a href="http://support.microsoft.com/kb//290341" target="_blank">Configuring Authentication Methods in an Exchange 2000 OWA Virtual Directory</a>
+								or article  <a href="http://support.microsoft.com/kb//327843" target="_blank">Troubleshooting Outlook Web Access logon failures in Exchange 2000 and in Exchange 2003</a>.
+							</ul>
 						</p>
 					<li>
 						<p>
