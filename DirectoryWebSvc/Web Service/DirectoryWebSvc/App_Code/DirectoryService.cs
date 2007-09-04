@@ -292,24 +292,13 @@ public class DirectoryService : System.Web.Services.WebService
                 XmlTextReader reader = null;
                 reader = new XmlTextReader(responseStream);
 
-                int flag = 0;
-
                 // read xml stream to parse out free/busy data
                 while (reader.Read())
                 {
-                    if (XmlNodeType.Element.ToString().Equals("Element"))
+                    if (reader.Name == "a:fbdata")
                     {
-                        if (reader.Name == "a:fbdata")
-                        {
-                            flag = 1;
-                        }
-                        if (reader.Name == "" && flag == 1)
-                        {
-                            flag = 0;
-                            // return free/busy value
-                            strResponse = reader.Value;
-                            break;
-                        }
+                        strResponse = reader.ReadElementString();
+                        return strResponse;
                     }
                 }
             }
