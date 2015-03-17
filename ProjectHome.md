@@ -1,0 +1,3 @@
+This OneBox for Enterprise module for the Google Search Appliance will return users' names and phone numbers from an LDAP directory and return users' free and busy time scheduling information from a Microsoft Exchange Server (OWA).  It is implemented in C# as a .NET web service.  See the [README](http://ldap-exchange-onebox.googlecode.com/svn/trunk/DirectoryWebSvc/Documentation/documentation.html) for more details. The project is available for Download [here](http://ldap-exchange-onebox.googlecode.com/svn/trunk/DirectoryWebSvc/ldap-exchange-onebox.zip).
+
+![http://ldap-exchange-onebox.googlecode.com/svn/trunk/DirectoryWebSvc/Documentation/doc_images/onebox.png](http://ldap-exchange-onebox.googlecode.com/svn/trunk/DirectoryWebSvc/Documentation/doc_images/onebox.png)
